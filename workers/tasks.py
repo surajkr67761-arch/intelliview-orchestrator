@@ -98,7 +98,11 @@ def _update_infra_health(healthy: bool = True):
 def _run_video(self, session_id: str, request_id: str | None = None) -> dict:
     from workers.video_pipeline import run_video_analysis
 
-    logger.info("Starting video analysis stage for session %s (request_id=%s)", session_id, request_id)
+    logger.info(
+        "Starting video analysis stage for session %s (request_id=%s)",
+        session_id,
+        request_id,
+    )
     start = time.perf_counter()
 
     _update_infra_health(True)
@@ -114,7 +118,9 @@ def _run_video(self, session_id: str, request_id: str | None = None) -> dict:
         video_result=result,
     )
 
-    logger.info("Video analysis stage completed in %.2fs (request_id=%s)", latency, request_id)
+    logger.info(
+        "Video analysis stage completed in %.2fs (request_id=%s)", latency, request_id
+    )
 
     return result
 
@@ -123,7 +129,11 @@ def _run_video(self, session_id: str, request_id: str | None = None) -> dict:
 def _run_audio(self, session_id: str, request_id: str | None = None) -> dict:
     from workers.audio_pipeline import run_audio_analysis
 
-    logger.info("Starting audio analysis stage for session %s (request_id=%s)", session_id, request_id)
+    logger.info(
+        "Starting audio analysis stage for session %s (request_id=%s)",
+        session_id,
+        request_id,
+    )
     start = time.perf_counter()
 
     _update_infra_health(True)
@@ -139,7 +149,9 @@ def _run_audio(self, session_id: str, request_id: str | None = None) -> dict:
         audio_result=result,
     )
 
-    logger.info("Audio analysis stage completed in %.2fs (request_id=%s)", latency, request_id)
+    logger.info(
+        "Audio analysis stage completed in %.2fs (request_id=%s)", latency, request_id
+    )
 
     return result
 
@@ -154,7 +166,9 @@ def _run_audio(self, session_id: str, request_id: str | None = None) -> dict:
     max_retries=EVALUATION_MAX_RETRIES,
     name="workers.tasks._after_parallel",
 )
-def _after_parallel(self, results: list, session_id: str, request_id: str | None = None):
+def _after_parallel(
+    self, results: list, session_id: str, request_id: str | None = None
+):
     """Runs after video + audio group completes; then evaluation + risk.
 
     Chord callback: first argument is the list of results from the parallel
@@ -164,7 +178,11 @@ def _after_parallel(self, results: list, session_id: str, request_id: str | None
 
     video_result, audio_result = results[0], results[1]
     try:
-        logger.info("Parallel video+audio done for %s - running evaluation (request_id=%s)", session_id, request_id)
+        logger.info(
+            "Parallel video+audio done for %s - running evaluation (request_id=%s)",
+            session_id,
+            request_id,
+        )
         session_manager.update_session_status(
             session_id, session_manager.EVALUATING, {"stage": "evaluation"}
         )
@@ -196,7 +214,10 @@ def _after_parallel(self, results: list, session_id: str, request_id: str | None
         latency = time.perf_counter() - start
         PIPELINE_LATENCY.labels(stage="evaluation").observe(latency)
         logger.info(
-            "Answer evaluation completed for session %s in %.2fs (request_id=%s)", session_id, latency, request_id
+            "Answer evaluation completed for session %s in %.2fs (request_id=%s)",
+            session_id,
+            latency,
+            request_id,
         )
 
         risk_report = RiskScoringEngine.generate_risk_report(
@@ -243,12 +264,20 @@ def _after_parallel(self, results: list, session_id: str, request_id: str | None
 
         session_manager.mark_session_completed(session_id, final_risk_score)
         state_sync.delete_session_state(session_id)
-        logger.info("Successfully completed processing for session %s (request_id=%s)", session_id, request_id)
+        logger.info(
+            "Successfully completed processing for session %s (request_id=%s)",
+            session_id,
+            request_id,
+        )
     except Retry:
         raise
     except Exception as exc:
         logger.error(
-            "Post-parallel stage failed for %s (request_id=%s): %s", session_id, request_id, exc, exc_info=True
+            "Post-parallel stage failed for %s (request_id=%s): %s",
+            session_id,
+            request_id,
+            exc,
+            exc_info=True,
         )
         FAILURE_COUNT.labels(failure_type="post_parallel_error").inc()
         session_manager.mark_session_failed(
@@ -279,7 +308,10 @@ def process_interview_session(self, session_id):
     try:
         worker_hostname = socket.gethostname()
         logger.info(
-            "Worker %s starting interview session: %s (request_id=%s)", worker_hostname, session_id, request_id
+            "Worker %s starting interview session: %s (request_id=%s)",
+            worker_hostname,
+            session_id,
+            request_id,
         )
 
         db_session = SessionLocal()

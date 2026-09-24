@@ -1,4 +1,11 @@
-from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response  # pyright: ignore[reportMissingImports]
+from fastapi import (
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    Request,
+    Response,
+)  # pyright: ignore[reportMissingImports]
 from fastapi.responses import JSONResponse  # pyright: ignore[reportMissingImports]
 
 """
@@ -27,16 +34,28 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from fastapi.middleware.cors import CORSMiddleware  # pyright: ignore[reportMissingImports]
+from fastapi.middleware.cors import (
+    CORSMiddleware,
+)  # pyright: ignore[reportMissingImports]
 from opentelemetry import trace  # pyright: ignore[reportMissingImports]
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor  # pyright: ignore[reportMissingImports]
-from opentelemetry.sdk.trace import TracerProvider  # pyright: ignore[reportMissingImports]
-from opentelemetry.sdk.trace.export import BatchSpanProcessor  # pyright: ignore[reportMissingImports]
+from opentelemetry.instrumentation.fastapi import (
+    FastAPIInstrumentor,
+)  # pyright: ignore[reportMissingImports]
+from opentelemetry.sdk.trace import (
+    TracerProvider,
+)  # pyright: ignore[reportMissingImports]
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+)  # pyright: ignore[reportMissingImports]
 from pydantic import BaseModel, Field  # pyright: ignore[reportMissingImports]
 from sqlalchemy import select  # pyright: ignore[reportMissingImports]
 from sqlalchemy.orm import Session  # pyright: ignore[reportMissingImports]
-from starlette.middleware.base import BaseHTTPMiddleware  # pyright: ignore[reportMissingImports]
-from starlette.requests import Request as StarletteRequest  # pyright: ignore[reportMissingImports]
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+)  # pyright: ignore[reportMissingImports]
+from starlette.requests import (
+    Request as StarletteRequest,
+)  # pyright: ignore[reportMissingImports]
 
 from config import (
     API_TOKEN,
@@ -869,10 +888,10 @@ async def start_interview(
 
         # Use scheduler to intelligently assign task
         scheduler.schedule_task(
-    session_id,
-    priority=priority,
-    request_id=http_request.state.request_id,
-)
+            session_id,
+            priority=priority,
+            request_id=http_request.state.request_id,
+        )
 
         # Get estimated wait time
         wait_time = scheduler.get_estimated_wait_time(priority)
@@ -2239,10 +2258,10 @@ async def retry_failed_session(
         # Actually requeue the interview
         # -----------------------------
         scheduler.schedule_task(
-    session_id=session_id,
-    priority=TaskPriority.MEDIUM,
-    request_id=http_request.state.request_id,
-)
+            session_id=session_id,
+            priority=TaskPriority.MEDIUM,
+            request_id=http_request.state.request_id,
+        )
 
         logger.info(
             "Session %s requeued successfully after retry scheduling.",
@@ -2572,7 +2591,9 @@ async def get_dashboard():
         HTML content of the dashboard
     """
     try:
-        from fastapi.responses import HTMLResponse  # pyright: ignore[reportMissingImports]
+        from fastapi.responses import (
+            HTMLResponse,
+        )  # pyright: ignore[reportMissingImports]
         from pathlib import Path
 
         dashboard_path = Path(__file__).parent / ".." / "monitoring" / "dashboard.html"

@@ -174,9 +174,7 @@ class Scheduler:
                     dispatch_err,
                 )
 
-                self.worker_registry.decrement_active_tasks(
-                    worker["worker_id"]
-                )
+                self.worker_registry.decrement_active_tasks(worker["worker_id"])
                 raise
 
             return True
@@ -328,6 +326,4 @@ class Scheduler:
 
         # Rough estimate:
         # (queued_tasks / workers) * average task duration
-        return int(
-            (total_queued_tasks / num_workers) * avg_task_duration
-        )
+        return int((total_queued_tasks / num_workers) * avg_task_duration)
