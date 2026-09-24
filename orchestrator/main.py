@@ -1,11 +1,11 @@
-from fastapi import (
+from fastapi import (  # pyright: ignore[reportMissingImports]
     Depends,
     FastAPI,
     Header,
     HTTPException,
     Request,
     Response,
-)  # pyright: ignore[reportMissingImports]
+)
 from fastapi.responses import JSONResponse  # pyright: ignore[reportMissingImports]
 
 """
@@ -22,8 +22,8 @@ Integrates:
 - Task Queue integration with Celery
 """
 import base64
-import io
 import importlib
+import io
 import json
 import logging
 import os
@@ -34,28 +34,26 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from fastapi.middleware.cors import (
+from fastapi.middleware.cors import (  # pyright: ignore[reportMissingImports]
     CORSMiddleware,
-)  # pyright: ignore[reportMissingImports]
+)
 from opentelemetry import trace  # pyright: ignore[reportMissingImports]
-from opentelemetry.instrumentation.fastapi import (
+from opentelemetry.instrumentation.fastapi import (  # pyright: ignore[reportMissingImports]
     FastAPIInstrumentor,
-)  # pyright: ignore[reportMissingImports]
-from opentelemetry.sdk.trace import (
+)
+from opentelemetry.sdk.trace import (  # pyright: ignore[reportMissingImports]
     TracerProvider,
-)  # pyright: ignore[reportMissingImports]
-from opentelemetry.sdk.trace.export import (
+)
+from opentelemetry.sdk.trace.export import (  # pyright: ignore[reportMissingImports]
     BatchSpanProcessor,
-)  # pyright: ignore[reportMissingImports]
+)
 from pydantic import BaseModel, Field  # pyright: ignore[reportMissingImports]
 from sqlalchemy import select  # pyright: ignore[reportMissingImports]
 from sqlalchemy.orm import Session  # pyright: ignore[reportMissingImports]
-from starlette.middleware.base import (
+from starlette.middleware.base import (  # pyright: ignore[reportMissingImports]
     BaseHTTPMiddleware,
-)  # pyright: ignore[reportMissingImports]
-from starlette.requests import (
-    Request as StarletteRequest,
-)  # pyright: ignore[reportMissingImports]
+)
+from starlette.requests import Request as StarletteRequest  # pyright: ignore[reportMissingImports]
 
 from config import (
     API_TOKEN,
@@ -2591,10 +2589,11 @@ async def get_dashboard():
         HTML content of the dashboard
     """
     try:
-        from fastapi.responses import (
-            HTMLResponse,
-        )  # pyright: ignore[reportMissingImports]
         from pathlib import Path
+
+        from fastapi.responses import (  # pyright: ignore[reportMissingImports]
+            HTMLResponse,
+        )
 
         dashboard_path = Path(__file__).parent / ".." / "monitoring" / "dashboard.html"
 
