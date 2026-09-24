@@ -53,7 +53,9 @@ from sqlalchemy.orm import Session  # pyright: ignore[reportMissingImports]
 from starlette.middleware.base import (  # pyright: ignore[reportMissingImports]
     BaseHTTPMiddleware,
 )
-from starlette.requests import Request as StarletteRequest  # pyright: ignore[reportMissingImports]
+from starlette.requests import (
+    Request as StarletteRequest,
+)  # pyright: ignore[reportMissingImports]
 
 from config import (
     API_TOKEN,
