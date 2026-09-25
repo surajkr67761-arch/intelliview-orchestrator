@@ -119,12 +119,9 @@ from workers.ai_client import text_to_speech
 from workers.bias_auditor import BiasAuditor
 
 try:
-    OTLPSpanExporter = getattr(
-        importlib.import_module(
-            "opentelemetry.exporter.otlp.proto.grpc.trace_exporter"
-        ),
-        "OTLPSpanExporter",
-    )
+    OTLPSpanExporter = (
+        importlib.import_module("opentelemetry.exporter.otlp.proto.grpc.trace_exporter")
+    ).OTLPSpanExporter
 except ImportError:
     OTLPSpanExporter = None
 
