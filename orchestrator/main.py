@@ -1,15 +1,5 @@
 """
 FastAPI Orchestration Server
-Main entry point for the AI Interview Orchestrator API
-
-Integrates:
-- Session Manager for lifecycle management
-- Session Tracker for monitoring
-- State Synchronizer for Redis/DB consistency
-- Scheduler for intelligent task scheduling
-- Load Balancer for worker distribution
-- Worker Registry for node tracking
-- Task Queue integration with Celery
 """
 
 import base64
@@ -20,7 +10,6 @@ import logging
 import os
 import re
 import time
-import time as _time
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from uuid import uuid4
@@ -32,9 +21,6 @@ from fastapi import (  # pyright: ignore[reportMissingImports]
     HTTPException,
     Request,
     Response,
-)
-from fastapi.middleware.cors import (  # pyright: ignore[reportMissingImports]
-    CORSMiddleware,
 )
 from fastapi.responses import JSONResponse  # pyright: ignore[reportMissingImports]
 from opentelemetry import trace  # pyright: ignore[reportMissingImports]
@@ -53,9 +39,9 @@ from sqlalchemy.orm import Session  # pyright: ignore[reportMissingImports]
 from starlette.middleware.base import (  # pyright: ignore[reportMissingImports]
     BaseHTTPMiddleware,
 )
-from starlette.requests import (
-    Request as StarletteRequest,
-)  # pyright: ignore[reportMissingImports]
+from starlette.middleware.cors import (  # pyright: ignore[reportMissingImports]
+    CORSMiddleware,
+)
 
 from config import (
     API_TOKEN,
@@ -327,16 +313,16 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
     `X-Request-ID` so callers can correlate logs.
     """
 
-    async def dispatch(self, request: StarletteRequest, call_next):
+    async def dispatch(self, request: Request, call_next):
         incoming = request.headers.get("x-request-id", "").strip()
         request_id = incoming if _VALID_ID_RE.match(incoming) else uuid4().hex
         request.state.request_id = request_id
         trace.get_current_span().set_attribute("request_id", request_id)
-        start = _time.perf_counter()
+        start = time.perf_counter()
         try:
             response = await call_next(request)
         except Exception:
-            elapsed_ms = (_time.perf_counter() - start) * 1000
+            elapsed_ms = (time.perf_counter() - start) * 1000
             log_event(
                 logger,
                 logging.ERROR,
@@ -347,7 +333,7 @@ class RequestContextMiddleware(BaseHTTPMiddleware):
             )
             logger.debug("traceback", exc_info=True)
             raise
-        elapsed_ms = (_time.perf_counter() - start) * 1000
+        elapsed_ms = (time.perf_counter() - start) * 1000
         response.headers["X-Request-ID"] = request_id
         response.headers["X-Response-Time-ms"] = f"{elapsed_ms:.1f}"
         if request.url.path != "/health":
