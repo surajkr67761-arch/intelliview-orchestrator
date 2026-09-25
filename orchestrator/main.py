@@ -1,13 +1,3 @@
-from fastapi import (  # pyright: ignore[reportMissingImports]
-    Depends,
-    FastAPI,
-    Header,
-    HTTPException,
-    Request,
-    Response,
-)
-from fastapi.responses import JSONResponse  # pyright: ignore[reportMissingImports]
-
 """
 FastAPI Orchestration Server
 Main entry point for the AI Interview Orchestrator API
@@ -21,6 +11,7 @@ Integrates:
 - Worker Registry for node tracking
 - Task Queue integration with Celery
 """
+
 import base64
 import importlib
 import io
@@ -34,9 +25,18 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from uuid import uuid4
 
+from fastapi import (  # pyright: ignore[reportMissingImports]
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    Request,
+    Response,
+)
 from fastapi.middleware.cors import (  # pyright: ignore[reportMissingImports]
     CORSMiddleware,
 )
+from fastapi.responses import JSONResponse  # pyright: ignore[reportMissingImports]
 from opentelemetry import trace  # pyright: ignore[reportMissingImports]
 from opentelemetry.instrumentation.fastapi import (  # pyright: ignore[reportMissingImports]
     FastAPIInstrumentor,
@@ -53,9 +53,7 @@ from sqlalchemy.orm import Session  # pyright: ignore[reportMissingImports]
 from starlette.middleware.base import (  # pyright: ignore[reportMissingImports]
     BaseHTTPMiddleware,
 )
-from starlette.requests import (
-    Request as StarletteRequest,
-)  # pyright: ignore[reportMissingImports]
+from starlette.requests import Request as StarletteRequest  # pyright: ignore[reportMissingImports]
 
 from config import (
     API_TOKEN,
